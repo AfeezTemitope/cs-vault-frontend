@@ -23,8 +23,10 @@ export default function UploadProject() {
     if (!requireAuth(getUser(), router, ['student'])) return;
     api.get('/projects').then(r => {
       const map: Record<string, Course> = {};
-      r.data.forEach((p: { course_id: string; courses: Course }) => {
-        if (p.courses && !map[p.course_id]) map[p.course_id] = { id: p.course_id, ...p.courses };
+      r.data.forEach((p: { course_id: string; courses: Omit<Course, 'id'> }) => {
+        if (p.courses && !map[p.course_id]) {
+          map[p.course_id] = { ...p.courses, id: p.course_id };
+        }
       });
       setCourses(Object.values(map));
     }).catch(() => {});
