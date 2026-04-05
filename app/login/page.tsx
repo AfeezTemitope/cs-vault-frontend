@@ -157,7 +157,7 @@ export default function LoginPage() {
                   <input
                     className="w-full rounded-lg pl-9 pr-4 py-3 text-sm mono focus:outline-none transition-colors border"
                     style={inputStyle}
-                    placeholder="e.g. CSC/2021/001 or STAFF001"
+                    placeholder="e.g. 220822000 or STAFF001"
                     value={forgotMatric}
                     onChange={e => setForgotMatric(e.target.value)}
                     onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
