@@ -7,7 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import EmptyState from '@/components/EmptyState';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { BookOpen, Plus, X } from 'lucide-react';
+import { BookOpen, Plus, X, Trash2 } from 'lucide-react';
 
 interface Course { id: string; title: string; course_code: string; session: string; lecturer_id?: string; }
 interface Lecturer { id: string; full_name: string; }
@@ -37,70 +37,79 @@ export default function CoursesPage() {
   };
 
   const assign = async (course_id: string, lecturer_id: string) => {
-    try { await api.put('/admin/courses/assign', { course_id, lecturer_id }); toast.success('Assigned!'); loadData(); }
+    try { await api.put('/admin/courses/assign', { course_id, lecturer_id: lecturer_id || null }); toast.success(lecturer_id ? 'Lecturer assigned' : 'Lecturer removed'); loadData(); }
     catch { toast.error('Failed'); }
   };
 
-  const inp = "w-full rounded-lg px-4 py-2.5 text-sm border focus:outline-none";
-  const inpStyle = { backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--soft)' };
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Delete ${title}?`)) return;
+    try { await api.delete(`/admin/courses/${id}`); toast.success('Course deleted'); loadData(); }
+    catch { toast.error('Failed'); }
+  };
 
   return (
     <Layout>
-      <PageHeader title="Courses" subtitle={`${courses.length} courses`}
+      <PageHeader title="Courses" subtitle={`${courses.length} active courses`}
         action={
-          <button onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--ink)' }}>
-            <Plus size={15} />Add Course
+          <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
+            <Plus size={16} /> Add Course
           </button>
         } />
 
       {showForm && (
-        <div className="rounded-xl p-5 mb-5 border fade-up" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold" style={{ color: 'var(--soft)' }}>New Course</h3>
-            <button onClick={() => setShowForm(false)} style={{ color: 'var(--muted)' }}><X size={16} /></button>
+        <div className="card fade-up" style={{ padding: 24, marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+            <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--soft)' }}>New Course</h3>
+            <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)' }}><X size={18} /></button>
           </div>
-          <form onSubmit={handleCreate} className="space-y-3">
+          <form onSubmit={handleCreate} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             {[['Course Title', 'title'], ['Course Code', 'course_code'], ['Session', 'session']].map(([label, key]) => (
               <div key={key}>
-                <label className="text-xs block mb-1" style={{ color: 'var(--muted)' }}>{label}</label>
-                <input required className={inp} style={inpStyle}
-                  value={form[key as keyof typeof form]}
-                  onChange={e => setForm({ ...form, [key]: e.target.value })}
-                  onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
-                  onBlur={e => (e.target.style.borderColor = 'var(--border)')} />
+                <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: 'var(--soft)', marginBottom: 6 }}>{label}</label>
+                <input className="input-field" required value={form[key as keyof typeof form]}
+                  onChange={e => setForm({ ...form, [key]: e.target.value })} />
               </div>
             ))}
-            <button type="submit" disabled={loading}
-              className="w-full font-semibold py-2.5 rounded-lg text-sm disabled:opacity-50"
-              style={{ backgroundColor: 'var(--accent)', color: 'var(--ink)' }}>
-              {loading ? 'Creating...' : 'Create Course'}
-            </button>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Creating...' : 'Create Course'}
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       {courses.length === 0
-        ? <EmptyState icon={BookOpen} title="No courses yet" subtitle="Add your first course" />
-        : <div className="space-y-3">
-            {courses.map(c => (
-              <div key={c.id} className="rounded-xl p-4 border" style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}>
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="font-semibold text-sm" style={{ color: 'var(--soft)' }}>{c.title}</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{c.session}</p>
+        ? <EmptyState icon={BookOpen} title="No courses yet" subtitle="Add CSC 497 and CSC 498 above" />
+        : <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {courses.map(c => {
+              const assigned = lecturers.find(l => l.id === c.lecturer_id);
+              return (
+                <div key={c.id} className="card" style={{ padding: '20px 22px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--soft)' }}>{c.title}</h3>
+                        <span className="badge badge-blue">{c.course_code}</span>
+                        <span style={{ fontSize: 13, color: 'var(--muted)' }}>{c.session}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <label style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>Assigned lecturer:</label>
+                        <select className="input-field" style={{ padding: '8px 12px', maxWidth: 260 }}
+                          value={c.lecturer_id ?? ''} onChange={e => assign(c.id, e.target.value)}>
+                          <option value="">— Unassigned —</option>
+                          {lecturers.map(l => <option key={l.id} value={l.id}>{l.full_name}</option>)}
+                        </select>
+                      </div>
+                      {assigned && <p style={{ fontSize: 13, color: 'var(--accent)', marginTop: 6, fontWeight: 500 }}>✓ {assigned.full_name}</p>}
+                    </div>
+                    <button onClick={() => handleDelete(c.id, c.title)} style={{ padding: '8px 12px', borderRadius: 10, border: '1.5px solid #FEE2E2', background: '#FEF2F2', color: '#DC2626', cursor: 'pointer' }}>
+                      <Trash2 size={15} />
+                    </button>
                   </div>
-                  <span className="mono text-xs px-2 py-0.5 rounded" style={{ color: 'var(--accent)', backgroundColor: 'rgba(200,241,53,0.1)' }}>{c.course_code}</span>
                 </div>
-                <select className="w-full rounded-lg px-3 py-2 text-sm border focus:outline-none"
-                  style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--soft)' }}
-                  value={c.lecturer_id ?? ''} onChange={e => assign(c.id, e.target.value)}>
-                  <option value="">— Assign lecturer —</option>
-                  {lecturers.map(l => <option key={l.id} value={l.id}>{l.full_name}</option>)}
-                </select>
-              </div>
-            ))}
+              );
+            })}
           </div>
       }
     </Layout>
