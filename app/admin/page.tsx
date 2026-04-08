@@ -24,7 +24,7 @@ export default function AdminDashboard() {
     <Layout>
       <PageHeader title={`Welcome back 👋`} subtitle="Here's what's happening on CS-Vault" />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
-        <StatCard label="Total Lecturers" value={stats.lecturers} icon={GraduationCap} color="blue" />
+        <StatCard label="Total Lecturers" value={stats.lecturers} icon={GraduationCap} color="purple" />
         <StatCard label="Total Students" value={stats.students} icon={Users} color="green" />
         <StatCard label="Active Courses" value={stats.courses} icon={BookOpen} color="orange" />
       </div>
