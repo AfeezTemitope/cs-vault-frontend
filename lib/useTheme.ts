@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 
 export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('cv-theme') as 'light' | 'dark' | null;
-    const preferred = saved ?? 'light';
-    setTheme(preferred);
-    document.documentElement.setAttribute('data-theme', preferred);
+    const saved = (localStorage.getItem('cv-theme') as 'light' | 'dark') ?? 'light';
+    setTheme(saved);
+    document.documentElement.setAttribute('data-theme', saved);
+    setMounted(true);
   }, []);
 
   const toggle = () => {
@@ -18,5 +19,5 @@ export function useTheme() {
     document.documentElement.setAttribute('data-theme', next);
   };
 
-  return { theme, toggle };
+  return { theme, toggle, mounted };
 }

@@ -19,7 +19,7 @@ const navItems: Record<string, { href: string; label: string; icon: React.Elemen
   ],
   lecturer: [
     { href: '/lecturer', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/lecturer/projects', label: 'Projects', icon: FolderOpen },
+    { href: '/lecturer/projects', label: 'All Projects', icon: FolderOpen },
     { href: '/lecturer/students/register', label: 'Register Student', icon: UserPlus },
   ],
   student: [
@@ -38,153 +38,119 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => { setUser(getUser()); setMounted(true); }, []);
 
   const items = navItems[user?.role ?? ''] ?? [];
-  const displayName = user?.name ?? user?.full_name ?? '';
+  const name = user?.name ?? user?.full_name ?? '';
 
   if (!mounted) return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--ink)' }}>
-      <div style={{ height: 64, backgroundColor: 'var(--card)', borderBottom: '1.5px solid var(--border)' }} />
+    <div style={{ minHeight: '100vh', background: 'var(--ink)' }}>
+      <div style={{ height: 66, background: 'var(--card)', borderBottom: '1.5px solid var(--border)' }} />
     </div>
   );
 
+  const navLink = (href: string, label: string, Icon: React.ElementType, onClick?: () => void) => {
+    const active = pathname === href;
+    return (
+      <Link key={href} href={href} onClick={onClick} style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '11px 14px', borderRadius: 10, fontSize: 15,
+        fontWeight: active ? 700 : 500, textDecoration: 'none',
+        transition: 'all 0.15s ease',
+        background: active ? 'var(--accent-light)' : 'transparent',
+        color: active ? 'var(--accent)' : 'var(--muted)',
+        borderLeft: `3px solid ${active ? 'var(--accent)' : 'transparent'}`,
+      }}>
+        <Icon size={18} />{label}
+      </Link>
+    );
+  };
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--ink)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--ink)' }}>
       {/* Header */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 50,
-        backgroundColor: 'var(--card)',
-        borderBottom: '1.5px solid var(--border)',
+        background: 'var(--card)', borderBottom: '1.5px solid var(--border)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 20px', height: 64,
-        boxShadow: 'var(--shadow)',
+        padding: '0 20px', height: 66, boxShadow: 'var(--shadow-sm)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => setOpen(!open)} className="md:hidden"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', padding: 4 }}>
+          <button onClick={() => setOpen(!open)} className="btn-ghost" style={{ display: 'flex' }}
+            aria-label="Menu">
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link href={`/${user?.role}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#fff', fontWeight: 800, fontSize: 14, fontFamily: 'JetBrains Mono' }}>CV</span>
             </div>
-            <span style={{ fontWeight: 800, fontSize: 17, color: 'var(--soft)', letterSpacing: '-0.3px' }}>CS-Vault</span>
+            <span className="hidden-mobile" style={{ fontWeight: 800, fontSize: 17, color: 'var(--soft)', letterSpacing: '-0.3px' }}>CS-Vault</span>
           </Link>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span className="hidden sm:block" style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500 }}>{displayName}</span>
-          <span className="badge badge-blue" style={{ fontSize: 11 }}>{user?.role}</span>
-          <ThemeToggle />
-          <button onClick={logout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', padding: 4 }}>
-            <LogOut size={18} />
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500, display: 'none' }} className="sm-show">{name}</span>
+          <span className="badge badge-purple" style={{ fontSize: 11 }}>{user?.role}</span>
+          <ThemeToggle size="sm" />
+          <button onClick={logout} className="btn-ghost" aria-label="Logout"><LogOut size={18} /></button>
         </div>
       </header>
 
       <div style={{ display: 'flex' }}>
-        {/* Sidebar desktop */}
-        <aside className="hidden md:flex" style={{
-          flexDirection: 'column', width: 240,
-          backgroundColor: 'var(--card)',
-          borderRight: '1.5px solid var(--border)',
-          padding: '24px 12px',
-          position: 'sticky', top: 64,
-          height: 'calc(100vh - 64px)',
-          gap: 4,
-        }}>
-          {items.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href;
-            return (
-              <Link key={href} href={href} style={{
-                display: 'flex', alignItems: 'center', gap: 12,
-                padding: '11px 14px', borderRadius: 10, fontSize: 15,
-                fontWeight: active ? 600 : 500, textDecoration: 'none',
-                transition: 'all 0.15s ease',
-                backgroundColor: active ? 'var(--accent-light)' : 'transparent',
-                color: active ? 'var(--accent)' : 'var(--muted)',
-                borderLeft: active ? '3px solid var(--accent)' : '3px solid transparent',
-              }}>
-                <Icon size={18} />
-                {label}
-              </Link>
-            );
-          })}
-          <div style={{ marginTop: 'auto' }}>
-            <Link href="/profile" style={{
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '11px 14px', borderRadius: 10, fontSize: 15,
-              fontWeight: pathname === '/profile' ? 600 : 500, textDecoration: 'none',
-              backgroundColor: pathname === '/profile' ? 'var(--accent-light)' : 'transparent',
-              color: pathname === '/profile' ? 'var(--accent)' : 'var(--muted)',
-              borderLeft: pathname === '/profile' ? '3px solid var(--accent)' : '3px solid transparent',
-            }}>
-              <Settings size={18} />Profile
-            </Link>
+        {/* Desktop sidebar */}
+        <aside style={{
+          display: 'none', flexDirection: 'column', width: 240,
+          background: 'var(--card)', borderRight: '1.5px solid var(--border)',
+          padding: '20px 12px', position: 'sticky', top: 66,
+          height: 'calc(100vh - 66px)', gap: 3, overflowY: 'auto',
+        }} className="sidebar-desktop">
+          {items.map(({ href, label, icon: Icon }) => navLink(href, label, Icon))}
+          <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
+            {navLink('/profile', 'Profile', Settings)}
           </div>
         </aside>
 
         {/* Mobile drawer */}
         {open && (
           <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setOpen(false)}>
-            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' }} />
             <aside style={{
-              position: 'absolute', top: 64, left: 0, bottom: 0, width: 260,
-              backgroundColor: 'var(--card)', borderRight: '1.5px solid var(--border)',
-              padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: 4,
+              position: 'absolute', top: 66, left: 0, bottom: 0, width: 268,
+              background: 'var(--card)', borderRight: '1.5px solid var(--border)',
+              padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 3,
+              overflowY: 'auto',
             }} onClick={e => e.stopPropagation()}>
-              {items.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href;
-                return (
-                  <Link key={href} href={href} onClick={() => setOpen(false)} style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '13px 14px', borderRadius: 10, fontSize: 15,
-                    fontWeight: active ? 600 : 500, textDecoration: 'none',
-                    backgroundColor: active ? 'var(--accent-light)' : 'transparent',
-                    color: active ? 'var(--accent)' : 'var(--muted)',
-                    borderLeft: active ? '3px solid var(--accent)' : '3px solid transparent',
-                  }}>
-                    <Icon size={18} />{label}
-                  </Link>
-                );
-              })}
-              <div style={{ marginTop: 'auto' }}>
-                <Link href="/profile" onClick={() => setOpen(false)} style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  padding: '13px 14px', borderRadius: 10, fontSize: 15,
-                  fontWeight: 500, textDecoration: 'none', color: 'var(--muted)',
-                }}>
-                  <Settings size={18} />Profile
-                </Link>
+              <div style={{ padding: '0 14px 16px', borderBottom: '1.5px solid var(--border)', marginBottom: 8 }}>
+                <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--soft)' }}>{name}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>{user?.role}</p>
+              </div>
+              {items.map(({ href, label, icon: Icon }) => navLink(href, label, Icon, () => setOpen(false)))}
+              <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
+                {navLink('/profile', 'Profile', Settings, () => setOpen(false))}
               </div>
             </aside>
           </div>
         )}
 
-        {/* Main content */}
-        <main style={{ flex: 1, padding: '32px 24px', maxWidth: 1000, width: '100%', margin: '0 auto', paddingBottom: 100 }}>
+        {/* Main */}
+        <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 80 }}>
           {children}
         </main>
       </div>
 
-      {/* Bottom nav mobile */}
-      <nav className="md:hidden" style={{
+      {/* Mobile bottom nav */}
+      <nav style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 30,
-        backgroundColor: 'var(--card)', borderTop: '1.5px solid var(--border)',
-        display: 'flex', justifyContent: 'space-around', padding: '8px 0',
-        boxShadow: '0 -4px 12px rgba(0,0,0,0.06)',
-      }}>
+        background: 'var(--card)', borderTop: '1.5px solid var(--border)',
+        display: 'flex', justifyContent: 'space-around', padding: '6px 0 8px',
+        boxShadow: '0 -4px 16px rgba(0,0,0,0.08)',
+      }} className="bottom-nav">
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link key={href} href={href} style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              gap: 3, padding: '4px 16px', textDecoration: 'none',
+              gap: 3, padding: '4px 16px', textDecoration: 'none', minWidth: 60,
               color: active ? 'var(--accent)' : 'var(--muted)',
-              fontWeight: active ? 600 : 400,
             }}>
               <Icon size={22} />
-              <span style={{ fontSize: 10 }}>{label}</span>
+              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{label}</span>
             </Link>
           );
         })}

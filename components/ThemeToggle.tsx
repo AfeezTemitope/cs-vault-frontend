@@ -2,27 +2,13 @@
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/lib/useTheme';
 
-export default function ThemeToggle() {
-  const { theme, toggle } = useTheme();
+export default function ThemeToggle({ size = 'md' }: { size?: 'sm' | 'md' }) {
+  const { theme, toggle, mounted } = useTheme();
+  if (!mounted) return <div style={{ width: size === 'sm' ? 32 : 38, height: size === 'sm' ? 32 : 38 }} />;
   return (
-    <button onClick={toggle} aria-label="Toggle theme"
-      style={{
-        width: 38, height: 38, borderRadius: 10,
-        border: '1.5px solid var(--border)',
-        background: 'var(--surface)',
-        color: 'var(--muted)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer', transition: 'all 0.2s ease',
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--accent)';
-        (e.currentTarget as HTMLButtonElement).style.color = 'var(--accent)';
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)';
-        (e.currentTarget as HTMLButtonElement).style.color = 'var(--muted)';
-      }}>
-      {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+    <button onClick={toggle} aria-label="Toggle theme" className="btn-ghost"
+      style={{ width: size === 'sm' ? 32 : 38, height: size === 'sm' ? 32 : 38, padding: 0, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {theme === 'light' ? <Moon size={size === 'sm' ? 16 : 18} /> : <Sun size={size === 'sm' ? 16 : 18} />}
     </button>
   );
 }

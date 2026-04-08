@@ -2,25 +2,22 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUser } from '@/lib/auth';
-import LandingPage from './landing/LandingPage';
+import LandingPage from '@/components/LandingPage';
 
 export default function Root() {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // Init theme
-    const saved = localStorage.getItem('cv-theme') ?? 'light';
-    document.documentElement.setAttribute('data-theme', saved);
     const user = getUser();
     if (user) { router.push(`/${user.role}`); return; }
-    setReady(true);
+    setShow(true);
   }, [router]);
 
-  if (!ready) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--ink)' }}>
-      <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: '#fff', fontWeight: 800, fontSize: 16 }}>CV</span>
+  if (!show) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--ink)' }}>
+      <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 16, fontFamily: 'JetBrains Mono' }}>CV</span>
       </div>
     </div>
   );
