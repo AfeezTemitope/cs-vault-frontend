@@ -19,8 +19,8 @@ export default function LandingPage() {
     { icon: Upload, title: 'Project Submission', desc: 'Students submit PDF reports, source code and GitHub links all in one place. No more emailing files.' },
     { icon: Search, title: 'Smart Browsing', desc: 'Browse and search past projects by course and session. Never repeat work that has already been done.' },
     { icon: GraduationCap, title: 'Lecturer Grading', desc: 'Lecturers review, grade and leave feedback on submissions directly on the platform.' },
-    { icon: Users, title: 'Course Management', desc: 'Admins assign lecturers to courses and manage student enrolments across all departments.' },
-    { icon: Shield, title: 'Role Based Access', desc: 'Three distinct roles — Admin, Lecturer and Student — each with their own secure dashboard.' },
+    // { icon: Users, title: 'Course Management', desc: 'Admins assign lecturers to courses and manage student enrolments across all departments.' },
+    // { icon: Shield, title: 'Role Based Access', desc: 'Three distinct roles — Admin, Lecturer and Student — each with their own secure dashboard.' },
     { icon: BookOpen, title: 'Past Reference', desc: 'Students access previous session projects for reference and inspiration — building on existing knowledge.' },
   ];
 
@@ -145,11 +145,11 @@ export default function LandingPage() {
       <section style={s.hero}>
         <div style={s.heroBg} />
         <div style={{ position: 'relative', zIndex: 1 }} className="fade-up">
-          <div style={s.pill}>
+          {/*<div style={s.pill}>
             <Star size={12} fill="currentColor" /> Built for Computer Science Students
-          </div>
+          </div>*/}
           <h1 style={s.h1}>
-            Your CS Projects,<br />
+            Your Projects,<br />
             <span style={s.accent}>Organised & Shared</span>
           </h1>
           <p style={s.sub}>
