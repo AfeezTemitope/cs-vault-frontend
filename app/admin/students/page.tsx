@@ -32,12 +32,20 @@ export default function StudentsPage() {
 
   const loadData = async () => {
     try {
-      const [s, c, e] = await Promise.all([
+      const [s, c] = await Promise.all([
         api.get('/admin/students'),
         api.get('/admin/courses'),
-        api.get('/admin/enrollments'),
       ]);
-      setStudents(s.data); setCourses(c.data); setEnrollments(e.data);
+      setStudents(s.data);
+      setCourses(c.data);
+  
+      // Enrollments — fetch separately, don't fail if empty
+      try {
+        const e = await api.get('/admin/enrollments');
+        setEnrollments(e.data);
+      } catch {
+        setEnrollments([]);
+      }
     } catch {}
   };
 
