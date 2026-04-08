@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { Upload, FileText, Archive, GitBranch, X, ChevronDown, Check } from 'lucide-react';
 
 interface Course { id: string; title: string; course_code: string; }
-const SESSIONS = ['2024/2025', '2023/2024', '2022/2023', '2021/2022'];
+const SESSIONS = ['2025/2026', '2024/2025', '2023/2024', '2022/2023', '2021/2022'];
 
 function CustomSelect({ value, onChange, options, placeholder }: {
   value: string; onChange: (v: string) => void;
