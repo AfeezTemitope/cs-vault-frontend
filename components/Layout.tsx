@@ -46,10 +46,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </div>
   );
 
-  const navLink = (href: string, label: string, Icon: React.ElementType, onClick?: () => void) => {
+  const SideLink = ({ href, label, Icon, onClick }: { href: string; label: string; Icon: React.ElementType; onClick?: () => void }) => {
     const active = pathname === href;
     return (
-      <Link key={href} href={href} onClick={onClick} style={{
+      <Link href={href} onClick={onClick} style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '11px 14px', borderRadius: 10, fontSize: 15,
         fontWeight: active ? 700 : 500, textDecoration: 'none',
@@ -73,36 +73,48 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         padding: '0 20px', height: 66, boxShadow: 'var(--shadow-sm)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => setOpen(!open)} className="btn-ghost" style={{ display: 'flex' }}
-            aria-label="Menu">
+          {/* hamburger - mobile only */}
+          <button onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              color: 'var(--muted)', display: 'flex', alignItems: 'center',
+              padding: 6, borderRadius: 8,
+            }}
+            className="mobile-only">
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link href={`/${user?.role}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <span style={{ color: '#fff', fontWeight: 800, fontSize: 14, fontFamily: 'JetBrains Mono' }}>CV</span>
             </div>
-            <span className="hidden-mobile" style={{ fontWeight: 800, fontSize: 17, color: 'var(--soft)', letterSpacing: '-0.3px' }}>CS-Vault</span>
+            <span style={{ fontWeight: 800, fontSize: 17, color: 'var(--soft)', letterSpacing: '-0.3px' }}>CS-Vault</span>
           </Link>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500, display: 'none' }} className="sm-show">{name}</span>
+          <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500 }} className="desktop-only">{name}</span>
           <span className="badge badge-purple" style={{ fontSize: 11 }}>{user?.role}</span>
           <ThemeToggle size="sm" />
-          <button onClick={logout} className="btn-ghost" aria-label="Logout"><LogOut size={18} /></button>
+          <button onClick={logout} aria-label="Logout"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 6 }}>
+            <LogOut size={18} />
+          </button>
         </div>
       </header>
 
       <div style={{ display: 'flex' }}>
         {/* Desktop sidebar */}
-        <aside style={{
-          display: 'none', flexDirection: 'column', width: 240,
+        <aside className="sidebar-desktop" style={{
+          flexDirection: 'column', width: 240,
           background: 'var(--card)', borderRight: '1.5px solid var(--border)',
           padding: '20px 12px', position: 'sticky', top: 66,
           height: 'calc(100vh - 66px)', gap: 3, overflowY: 'auto',
-        }} className="sidebar-desktop">
-          {items.map(({ href, label, icon: Icon }) => navLink(href, label, Icon))}
+        }}>
+          {items.map(({ href, label, icon: Icon }) => (
+            <SideLink key={href} href={href} label={label} Icon={Icon} />
+          ))}
           <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
-            {navLink('/profile', 'Profile', Settings)}
+            <SideLink href="/profile" label="Profile" Icon={Settings} />
           </div>
         </aside>
 
@@ -118,29 +130,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }} onClick={e => e.stopPropagation()}>
               <div style={{ padding: '0 14px 16px', borderBottom: '1.5px solid var(--border)', marginBottom: 8 }}>
                 <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--soft)' }}>{name}</p>
-                <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>{user?.role}</p>
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2, textTransform: 'capitalize' }}>{user?.role}</p>
               </div>
-              {items.map(({ href, label, icon: Icon }) => navLink(href, label, Icon, () => setOpen(false)))}
+              {items.map(({ href, label, icon: Icon }) => (
+                <SideLink key={href} href={href} label={label} Icon={Icon} onClick={() => setOpen(false)} />
+              ))}
               <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
-                {navLink('/profile', 'Profile', Settings, () => setOpen(false))}
+                <SideLink href="/profile" label="Profile" Icon={Settings} onClick={() => setOpen(false)} />
               </div>
             </aside>
           </div>
         )}
 
-        {/* Main */}
-        <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 80 }}>
+        {/* Main content */}
+        <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 100 }}>
           {children}
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
-      <nav style={{
+      {/* Bottom nav - MOBILE ONLY */}
+      <nav className="bottom-nav" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 30,
         background: 'var(--card)', borderTop: '1.5px solid var(--border)',
-        display: 'flex', justifyContent: 'space-around', padding: '6px 0 8px',
+        justifyContent: 'space-around', padding: '6px 0 8px',
         boxShadow: '0 -4px 16px rgba(0,0,0,0.08)',
-      }} className="bottom-nav">
+      }}>
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (

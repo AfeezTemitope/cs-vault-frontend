@@ -225,3 +225,45 @@ body {
 
 /* ── Divider ── */
 .divider { border: none; border-top: 1.5px solid var(--border); margin: 24px 0; }
+
+/* ── Responsive fixes ── */
+@media (min-width: 768px) {
+  .bottom-nav { display: none !important; }
+  .sidebar-desktop { display: flex !important; }
+}
+
+@media (max-width: 767px) {
+  .sidebar-desktop { display: none !important; }
+  .btn-ghost.menu-btn { display: flex !important; }
+}
+
+/* Force purple accent - override any blue */
+:root {
+  --accent: #7C3AED !important;
+  --accent-dim: #6D28D9 !important;
+  --accent-light: #F3EEFF !important;
+  --accent-glow: rgba(124,58,237,0.15) !important;
+}
+
+[data-theme="dark"] {
+  --accent: #A78BFA !important;
+  --accent-dim: #8B5CF6 !important;
+  --accent-light: #1F1833 !important;
+  --accent-glow: rgba(167,139,250,0.18) !important;
+  --ink: #0D0B14 !important;
+  --surface: #13111C !important;
+  --card: #1A1726 !important;
+  --border: #2D2840 !important;
+  --soft: #EAE8F8 !important;
+  --muted: #8B8AAA !important;
+}
+
+.mobile-only { display: flex; }
+.desktop-only { display: block; }
+
+@media (min-width: 768px) {
+  .mobile-only { display: none !important; }
+}
+@media (max-width: 767px) {
+  .desktop-only { display: none !important; }
+}
