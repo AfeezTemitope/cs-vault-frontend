@@ -24,7 +24,7 @@ export default function LecturerDashboard() {
     <Layout>
       <PageHeader title={`Hi, ${(user?.name ?? user?.full_name ?? '').split(' ')[0]} 👋`} subtitle="Your teaching overview" />
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <StatCard label="My Courses" value={courses.length} icon={BookOpen} accent />
+        <StatCard label="My Courses" value={courses.length} icon={BookOpen} color="blue" />
       </div>
       <h2 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--muted)' }}>Your Courses</h2>
       <div className="space-y-3">
