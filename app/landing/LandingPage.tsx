@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
 import {
   BookOpen, Upload, Search, Users, GraduationCap,
-  Shield, ArrowRight, CheckCircle, Star, Github
+  Shield, ArrowRight, CheckCircle, Star
 } from 'lucide-react';
 import { useEffect } from 'react';
 
