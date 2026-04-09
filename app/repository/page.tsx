@@ -5,6 +5,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import api from '@/lib/api';
 import { Search, Download, Eye, BookOpen, ChevronDown, Check, ArrowLeft, FileText, GitBranch, Archive, Filter } from 'lucide-react';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 
 interface Project {
   id: string; title: string; session: string; year?: string;
