@@ -6,8 +6,8 @@ import { getUser, logout, User } from '@/lib/auth';
 import ThemeToggle from './ThemeToggle';
 import {
   LayoutDashboard, BookOpen, Upload, Search,
-  Users, GraduationCap, LogOut, Menu, X,
-  Settings, FolderOpen, UserPlus
+  Users, GraduationCap, Menu, X,
+  Settings, FolderOpen, UserPlus, LogOut
 } from 'lucide-react';
 
 const navItems: Record<string, { href: string; label: string; icon: React.ElementType }[]> = {
@@ -19,7 +19,7 @@ const navItems: Record<string, { href: string; label: string; icon: React.Elemen
   ],
   lecturer: [
     { href: '/lecturer', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/lecturer/projects', label: 'All Projects', icon: FolderOpen },
+    { href: '/lecturer/projects', label: 'Projects', icon: FolderOpen },
     { href: '/lecturer/students/register', label: 'Register Student', icon: UserPlus },
   ],
   student: [
@@ -63,6 +63,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const LogoutBtn = ({ onClick }: { onClick?: () => void }) => (
+    <button onClick={() => { onClick?.(); logout(); }}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '11px 14px', borderRadius: 10, fontSize: 15,
+        fontWeight: 500, cursor: 'pointer', width: '100%',
+        background: 'none', border: 'none', color: 'var(--muted)',
+        borderLeft: '3px solid transparent', transition: 'all 0.15s',
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+      }}
+      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#DC2626'; (e.currentTarget as HTMLButtonElement).style.background = '#FEF2F2'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--muted)'; (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}>
+      <LogOut size={18} /> Logout
+    </button>
+  );
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--ink)' }}>
       {/* Header */}
@@ -73,15 +89,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         padding: '0 20px', height: 66, boxShadow: 'var(--shadow-sm)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* hamburger - mobile only */}
-          <button onClick={() => setOpen(!open)}
-            aria-label="Menu"
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: 'var(--muted)', display: 'flex', alignItems: 'center',
-              padding: 6, borderRadius: 8,
-            }}
-            className="mobile-only">
+          <button onClick={() => setOpen(!open)} className="mobile-only"
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 6 }}>
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link href={`/${user?.role}`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
@@ -92,13 +101,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Link>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500 }} className="desktop-only">{name}</span>
+          <span className="desktop-only" style={{ fontSize: 14, color: 'var(--muted)', fontWeight: 500 }}>{name}</span>
           <span className="badge badge-purple" style={{ fontSize: 11 }}>{user?.role}</span>
           <ThemeToggle size="sm" />
-          <button onClick={logout} aria-label="Logout"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', padding: 6 }}>
-            <LogOut size={18} />
-          </button>
         </div>
       </header>
 
@@ -113,8 +118,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {items.map(({ href, label, icon: Icon }) => (
             <SideLink key={href} href={href} label={label} Icon={Icon} />
           ))}
-          <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
+          <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 3 }}>
             <SideLink href="/profile" label="Profile" Icon={Settings} />
+            <LogoutBtn />
           </div>
         </aside>
 
@@ -125,8 +131,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <aside style={{
               position: 'absolute', top: 66, left: 0, bottom: 0, width: 268,
               background: 'var(--card)', borderRight: '1.5px solid var(--border)',
-              padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 3,
-              overflowY: 'auto',
+              padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto',
             }} onClick={e => e.stopPropagation()}>
               <div style={{ padding: '0 14px 16px', borderBottom: '1.5px solid var(--border)', marginBottom: 8 }}>
                 <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--soft)' }}>{name}</p>
@@ -135,20 +140,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {items.map(({ href, label, icon: Icon }) => (
                 <SideLink key={href} href={href} label={label} Icon={Icon} onClick={() => setOpen(false)} />
               ))}
-              <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)' }}>
+              <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1.5px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <SideLink href="/profile" label="Profile" Icon={Settings} onClick={() => setOpen(false)} />
+                <LogoutBtn onClick={() => setOpen(false)} />
               </div>
             </aside>
           </div>
         )}
 
-        {/* Main content */}
         <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 100 }}>
           {children}
         </main>
       </div>
 
-      {/* Bottom nav - MOBILE ONLY */}
+      {/* Bottom nav mobile */}
       <nav className="bottom-nav" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 30,
         background: 'var(--card)', borderTop: '1.5px solid var(--border)',
@@ -160,7 +165,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           return (
             <Link key={href} href={href} style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              gap: 3, padding: '4px 16px', textDecoration: 'none', minWidth: 60,
+              gap: 3, padding: '4px 12px', textDecoration: 'none', minWidth: 56,
               color: active ? 'var(--accent)' : 'var(--muted)',
             }}>
               <Icon size={22} />

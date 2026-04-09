@@ -267,3 +267,11 @@ body {
 @media (max-width: 767px) {
   .desktop-only { display: none !important; }
 }
+
+/* Status badges */
+.badge-pending  { background: #FFF7ED; color: #D97706; }
+.badge-approved { background: #ECFDF5; color: #059669; }
+.badge-rejected { background: #FEF2F2; color: #DC2626; }
+[data-theme="dark"] .badge-pending  { background: #1C0F00; color: #FBB03B; }
+[data-theme="dark"] .badge-approved { background: #052E16; color: #34D399; }
+[data-theme="dark"] .badge-rejected { background: #1F0000; color: #F87171; }
