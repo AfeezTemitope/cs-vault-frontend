@@ -15,8 +15,8 @@ export default function LandingPage() {
     { icon: Upload, title: 'Project Submission', desc: 'Students upload PDF reports, ZIP source code and GitHub links — all from one clean interface. No more emailing attachments.', color: '#7C3AED' },
     { icon: Search, title: 'Browse Past Work', desc: 'Search and filter projects by course and session. See what has already been built so you never repeat work unnecessarily.', color: '#059669' },
     { icon: Award, title: 'Grades & Feedback', desc: 'Lecturers review submissions, assign letter grades (A–F), and leave comments. Students see feedback instantly.', color: '#D97706' },
-    { icon: Users, title: 'Student Management', desc: 'Admins and lecturers register students with one click. Login credentials are automatically sent to their email.', color: '#DC2626' },
-    { icon: Shield, title: 'Role Based Access', desc: 'Three secure roles — Admin, Lecturer, Student. Each person only sees and does what their role allows.', color: '#0891B2' },
+    // { icon: Users, title: 'Student Management', desc: 'Admins and lecturers register students with one click. Login credentials are automatically sent to their email.', color: '#DC2626' },
+    // { icon: Shield, title: 'Role Based Access', desc: 'Three secure roles — Admin, Lecturer, Student. Each person only sees and does what their role allows.', color: '#0891B2' },
     { icon: MessageSquare, title: 'Open Discussion', desc: 'Everyone can comment on projects. Students ask questions, lecturers give feedback, knowledge flows freely.', color: '#7C3AED' },
   ];
 
