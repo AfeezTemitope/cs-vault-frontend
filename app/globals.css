@@ -268,6 +268,10 @@ body {
   .desktop-only { display: none !important; }
 }
 
+.bottom-nav {
+  display: none !important;
+}
+
 /* Status badges */
 .badge-pending  { background: #FFF7ED; color: #D97706; }
 .badge-approved { background: #ECFDF5; color: #059669; }
