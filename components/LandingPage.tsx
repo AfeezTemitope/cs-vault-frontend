@@ -48,12 +48,12 @@ export default function LandingPage() {
           <span style={{ fontWeight: 800, fontSize: 18, color: 'var(--soft)', letterSpacing: '-0.3px' }}>CS-Vault</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Link href="/repository"
+          {/*<Link href="/repository"
             style={{ fontSize: 14, fontWeight: 600, color: 'var(--muted)', textDecoration: 'none', padding: '8px 12px', borderRadius: 8, transition: 'color 0.15s' }}
             onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--accent)'}
             onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = 'var(--muted)'}>
             Repository
-          </Link>
+          </Link>*/}
           <ThemeToggle />
           <button className="btn btn-primary btn-sm" onClick={() => router.push('/login')}>
             Sign In <ArrowRight size={15} />
@@ -98,7 +98,7 @@ export default function LandingPage() {
             ))}
           </div>
           {/* Browse repo CTA */}
-          <div className="fade-up delay-5">
+          {/*<div className="fade-up delay-5">
             <Link href="/repository" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '12px 24px', borderRadius: 12, textDecoration: 'none',
@@ -110,7 +110,7 @@ export default function LandingPage() {
               onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'var(--border)'; }}>
               <BookOpen size={18} /> Browse Public Repository
             </Link>
-          </div>
+          </div>*/}
         </div>
       </section>
 
