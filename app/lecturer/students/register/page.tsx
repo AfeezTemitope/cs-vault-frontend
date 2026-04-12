@@ -13,17 +13,25 @@ interface Course { id: string; title: string; course_code: string; }
 export default function RegisterStudents() {
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [form, setForm] = useState({ full_name: '', email: '', matric_number: '', course_ids: [] as string[] });
+  const [form, setForm] = useState({
+    full_name: '', email: '', matric_number: '', course_ids: [] as string[]
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!requireAuth(getUser(), router, ['lecturer', 'admin'])) return;
-    // Fetch ALL courses so lecturer can assign even if not yet assigned to them
-    api.get('/admin/courses')
-      .then(r => setCourses(r.data))
+    // Try lecturer courses first, then fall back to all courses endpoint
+    api.get('/lecturer/courses')
+      .then(r => {
+        if (r.data && r.data.length > 0) {
+          setCourses(r.data);
+        } else {
+          // Lecturer has no assigned courses — fetch all available
+          return api.get('/projects/courses').then(r2 => setCourses(r2.data));
+        }
+      })
       .catch(() => {
-        // fallback to lecturer courses
-        api.get('/lecturer/courses').then(r => setCourses(r.data)).catch(() => {});
+        api.get('/projects/courses').then(r => setCourses(r.data)).catch(() => {});
       });
   }, [router]);
 
@@ -58,28 +66,37 @@ export default function RegisterStudents() {
           <div className="field">
             <label className="label">Full Name</label>
             <input className="input" required placeholder="e.g. John Doe"
-              value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} />
+              value={form.full_name}
+              onChange={e => setForm({ ...form, full_name: e.target.value })} />
           </div>
 
           <div className="field">
             <label className="label">Email Address</label>
             <input className="input" type="email" required placeholder="e.g. student@gmail.com"
-              value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+              value={form.email}
+              onChange={e => setForm({ ...form, email: e.target.value })} />
           </div>
 
           <div className="field">
             <label className="label">Matric Number</label>
             <input className="input mono" required placeholder="e.g. CSC/2021/001"
-              value={form.matric_number} onChange={e => setForm({ ...form, matric_number: e.target.value })} />
+              value={form.matric_number}
+              onChange={e => setForm({ ...form, matric_number: e.target.value })} />
           </div>
 
           <div className="field">
             <label className="label">
               Assign to Course(s)
-              <span style={{ fontWeight: 400, color: 'var(--muted)', fontSize: 13, marginLeft: 6 }}>Select one or both</span>
+              <span style={{ fontWeight: 400, color: 'var(--muted)', fontSize: 13, marginLeft: 6 }}>
+                Select one or both
+              </span>
             </label>
             {courses.length === 0 ? (
-              <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--muted)', fontSize: 14 }}>
+              <div style={{
+                padding: '14px 16px', borderRadius: 10,
+                background: 'var(--surface)', border: '1.5px solid var(--border)',
+                color: 'var(--muted)', fontSize: 14
+              }}>
                 No courses available — ask admin to create courses first
               </div>
             ) : (
@@ -93,7 +110,8 @@ export default function RegisterStudents() {
                         padding: '14px 18px', borderRadius: 12, cursor: 'pointer',
                         border: `2px solid ${selected ? 'var(--accent)' : 'var(--border)'}`,
                         background: selected ? 'var(--accent-light)' : 'var(--surface)',
-                        transition: 'all 0.15s ease', textAlign: 'left',
+                        transition: 'all 0.15s', textAlign: 'left', width: '100%',
+                        fontFamily: 'Plus Jakarta Sans, sans-serif',
                       }}>
                       <div style={{
                         width: 22, height: 22, borderRadius: 6, flexShrink: 0,
@@ -101,11 +119,15 @@ export default function RegisterStudents() {
                         background: selected ? 'var(--accent)' : 'transparent',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}>
-                        {selected && <CheckCircle size={14} style={{ color: '#fff' }} />}
+                        {selected && <CheckCircle size={13} style={{ color: '#fff' }} />}
                       </div>
                       <div>
-                        <div className="mono" style={{ fontSize: 13, fontWeight: 600, color: selected ? 'var(--accent)' : 'var(--muted)' }}>{c.course_code}</div>
-                        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--soft)' }}>{c.title}</div>
+                        <div className="mono" style={{ fontSize: 12, fontWeight: 600, color: selected ? 'var(--accent)' : 'var(--muted)' }}>
+                          {c.course_code}
+                        </div>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--soft)' }}>
+                          {c.title}
+                        </div>
                       </div>
                     </button>
                   );

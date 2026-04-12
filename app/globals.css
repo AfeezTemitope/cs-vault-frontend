@@ -279,3 +279,16 @@ body {
 [data-theme="dark"] .badge-pending  { background: #1C0F00; color: #FBB03B; }
 [data-theme="dark"] .badge-approved { background: #052E16; color: #34D399; }
 [data-theme="dark"] .badge-rejected { background: #1F0000; color: #F87171; }
+
+/* Mobile input fix */
+.input, input.input, textarea.input {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+/* Ensure form grid is single column on small screens */
+@media (max-width: 600px) {
+  .form-grid-2 { grid-template-columns: 1fr !important; }
+  .form-grid-3 { grid-template-columns: 1fr !important; }
+}

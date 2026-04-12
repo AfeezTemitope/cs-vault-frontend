@@ -7,7 +7,7 @@ import ThemeToggle from './ThemeToggle';
 import {
   LayoutDashboard, BookOpen, Upload, Search,
   Users, GraduationCap, Menu, X,
-  Settings, FolderOpen, UserPlus, LogOut
+  Settings, FolderOpen, UserPlus, LogOut, Library
 } from 'lucide-react';
 
 const navItems: Record<string, { href: string; label: string; icon: React.ElementType }[]> = {
@@ -16,15 +16,17 @@ const navItems: Record<string, { href: string; label: string; icon: React.Elemen
     { href: '/admin/lecturers', label: 'Lecturers', icon: GraduationCap },
     { href: '/admin/courses', label: 'Courses', icon: BookOpen },
     { href: '/admin/students', label: 'Students', icon: Users },
+    { href: '/vault', label: 'Repository', icon: Library },
   ],
   lecturer: [
     { href: '/lecturer', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/lecturer/projects', label: 'Projects', icon: FolderOpen },
+    { href: '/vault', label: 'Repository', icon: Library },
     { href: '/lecturer/students/register', label: 'Register Student', icon: UserPlus },
   ],
   student: [
     { href: '/student', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/student/projects', label: 'Browse', icon: Search },
+    { href: '/vault', label: 'Repository', icon: Library },
     { href: '/student/upload', label: 'Upload', icon: Upload },
   ],
 };
@@ -46,7 +48,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     </div>
   );
 
-  const SideLink = ({ href, label, Icon, onClick }: { href: string; label: string; Icon: React.ElementType; onClick?: () => void }) => {
+  const SideLink = ({ href, label, Icon, onClick }: {
+    href: string; label: string; Icon: React.ElementType; onClick?: () => void;
+  }) => {
     const active = pathname === href;
     return (
       <Link href={href} onClick={onClick} style={{
@@ -73,8 +77,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         borderLeft: '3px solid transparent', transition: 'all 0.15s',
         fontFamily: 'Plus Jakarta Sans, sans-serif',
       }}
-      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#DC2626'; (e.currentTarget as HTMLButtonElement).style.background = '#FEF2F2'; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--muted)'; (e.currentTarget as HTMLButtonElement).style.background = 'none'; }}>
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLButtonElement).style.color = '#DC2626';
+        (e.currentTarget as HTMLButtonElement).style.background = '#FEF2F2';
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLButtonElement).style.color = 'var(--muted)';
+        (e.currentTarget as HTMLButtonElement).style.background = 'none';
+      }}>
       <LogOut size={18} /> Logout
     </button>
   );
@@ -148,32 +158,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 100 }}>
+        <main style={{ flex: 1, padding: '28px 20px', maxWidth: 1040, width: '100%', margin: '0 auto', paddingBottom: 60 }}>
           {children}
         </main>
       </div>
-
-      {/* Bottom nav mobile */}
-      <nav className="bottom-nav" style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 30,
-        background: 'var(--card)', borderTop: '1.5px solid var(--border)',
-        justifyContent: 'space-around', padding: '6px 0 8px',
-        boxShadow: '0 -4px 16px rgba(0,0,0,0.08)',
-      }}>
-        {items.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
-          return (
-            <Link key={href} href={href} style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              gap: 3, padding: '4px 12px', textDecoration: 'none', minWidth: 56,
-              color: active ? 'var(--accent)' : 'var(--muted)',
-            }}>
-              <Icon size={22} />
-              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500 }}>{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
     </div>
   );
 }
